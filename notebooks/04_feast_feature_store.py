@@ -46,7 +46,9 @@ def make_user_profile(n_users: int = 100) -> pl.DataFrame:
             ["ai_ml", "cloud", "security", "database", "devops"][i % 5]
             for i in range(n_users)
         ],
-        "event_timestamp": [NOW - timedelta(hours=i % 48) for i in range(n_users)],
+        # Must predate every entity_df timestamp in §6 (all within the last 2h),
+        # else the PIT join correctly drops the row as "feature did not exist yet".
+        "event_timestamp": [NOW - timedelta(hours=24 + i % 24) for i in range(n_users)],
     })
 
 
